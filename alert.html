@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+<style type="text/css">
+    body {
+        width:422px;
+        height:158px;
+         overflow:hidden;
+        /*background-color: #99ff99;*/
+    }
+    div#title,div#time 
+    {
+        color:#f0f8ff;
+        font-weight: bold;
+        font-size: 1.2em;
+        height: 18px;
+        margin: 20px;
+        /*border: solid 1px blue;*/
+    }
+    div#message 
+    {
+          color: #a6a5a5;
+         font-size: 1em;
+         height: 40px;
+         max-height: 40px;
+         max-inline-size: 2;
+         text-overflow: ellipsis;
+         overflow:hidden;
+         white-space:nowrap;
+         margin: 20px;
+                 /*border: solid 1px red;*/
+
+    }
+
+</style>
+<script>window.$ = window.jQuery = require('./assets/js/jquery.min.js');</script>
+<script> 
+// import { ipcRenderer } from 'electron';
+ const {ipcRenderer} = require('electron')    
+
+ ipcRenderer.on('alert-msg', (evt, msg) => {
+         $("#title").text(msg.title);
+         $("#time").text(msg.timestamp);
+        $("#message").text(msg.content);
+});
+$(document).ready( () =>
+    {
+        ipcRenderer.send('alert-ready');
+    }
+)
+function hideme(){
+    ipcRenderer.send('alert-close');
+}
+    // console.log(location.search.substr(1).split('&').map( (e) =>{ console.log(e.split('=')) }))
+</script>
+</head>
+
+<body onclick="hideme()">
+    <img src="./assets/images/close.png" style="position: absolute;right:8px;top:8px" onclick="hideme();"/>
+  <p>
+<div id="title"></div>
+  </p>
+  <p>
+  <div id="time"></div>
+  </p>
+  <p>
+<div id="message" ></div>
+  </p>
+</body>
+</html>

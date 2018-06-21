@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+		<link rel="stylesheet" href="assets/css/history.css" />
+</head>
+<body>
+    <script>window.$ = window.jQuery = require('./assets/js/jquery.min.js');</script>
+
+    <script>
+    const {ipcRenderer} = require('electron')
+    let allEntry = new Map();
+    let lastmsg;
+
+    function _append(msg){
+        var user =  msg.title;       
+        var content = msg.content;
+        var old=  allEntry.get(user)
+        if(old == undefined){
+            old = [];
+        }
+
+        lastmsg={'time':msg.timestamp,'text':content}
+
+        old.push(lastmsg);
+        
+        allEntry.set(user,old);
+        // alert(allEntry);
+    }
+
+    ipcRenderer.on('alert-msg', (evt, msg) => {           
+        _append(msg);        
+    });
+
+     ipcRenderer.on('display-history-msg', (evt, msg) => {           
+        setlayout();
+    });
+
+    //test data
+    // for(var i=0;i<20;i++){
+    //     var msg ={title:"客户名字"+i,timestamp:"04:12:23",content:"发生的纠纷老司机福建师范,我说了一句很长的话发生发生顶上嘎嘎截水沟怕死鬼撒尴尬三个撒个13123了婆家是的静安嘉"+i};
+    //     for(var j=0;j<i;j++){
+    //             _append(msg);
+    //     }
+    // }
+
+function setlayout(bclear){
+    if(bclear){
+      $(".users ul").html("");
+      $(".detail ul").html("");
+    }
+      allEntry.forEach(function(value,key,map) {
+            var text = "";
+             var arr= map.get(key)
+             if(arr !=undefined){
+                 if(arr.length>0){
+                    text=  arr[arr.length-1].time + '&nbsp;&nbsp;&nbsp;' +arr[arr.length-1].text;
+                 }
+             }
+
+          if($(`li.item[u='${key}']`).length==0){            
+                $(`<li class='item' u='${key}' >${key}<div>${text}</div></li>`).appendTo(".users ul");    
+          }else{
+              //update user's last message
+                $(`li.item[u='${key}']`).children("div").html(text);
+          }
+
+    }        
+    );   
+        $("li.active").click();
+}
+$(document).ready(()=>{
+
+//bind click
+    $(".users ul").on("click","li",(evt)=>
+    {      
+        $("li.active").removeClass("active")
+        var src=$(evt.target)
+        if(evt.target.tagName.toLowerCase() =="div"){
+            src=$(evt.target).parent("li");
+        }
+        
+        
+        src.removeClass("noactive").addClass("active");
+        $("li").not(src).addClass("noactive");
+
+        //show detail
+        $(".detail ul").html("");
+        var key = src.clone().children().remove().end().text();
+        var arr =allEntry.get(key)
+
+        if(  arr != undefined){
+            arr.forEach((s)=>
+            {
+                $("<li class='autoitem'>"+ s.time + "<br/>" + s.text  +"</li>").appendTo(".detail ul");    
+            });
+        }
+    });
+
+  
+})
+
+function clearmsg(){
+    allEntry.clear();
+    setlayout(true);
+}
+    </script>
+
+<table style="width:600px;overflow: hidden" cellspacing=0>
+    <tr>
+        <th colspan="2">最近收到的消息<button onclick="clearmsg()">清空消息</button></th>
+    </tr>
+    <tr>
+        <td>
+            <div class="users">
+                <ul>
+                           <!--<li class="item noactive">fdsfs</li>-->
+                </ul>
+            </div>
+        </td>
+        <!--<td style="border: 1px solid #aaa;background-color: #666;width: auto">&nbsp;</td>-->
+        <td>
+            <div class="detail"> <ul></ul></div>
+        </td>        
+    </tr>
+</table>
+<script>
+
+</script>
+</body>
+</html>

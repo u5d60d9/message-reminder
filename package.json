@@ -1,0 +1,44 @@
+{
+  "name": "message-reminder",
+  "version": "1.0.0",
+  "description": "消息提醒",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win --ia32",
+    "update": "bash -c \"rm -rf dist\" && asar p . %localappdata%/Programs/message-reminder/resources/app.asar"
+  },
+  "build": {
+    "asar": true,
+    "extraResources": [
+      {
+        "from": "config",
+        "to": "config",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "assets/icon/",
+        "to": "assets/icon/",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
+  },
+  "repository": "https://github.com/electron/electron-quick-start",
+  "keywords": [
+    "消息提醒"
+  ],
+  "author": "liuwei@dlwhy.com",
+  "license": "CC0-1.0",
+  "devDependencies": {},
+  "dependencies": {
+    "builder": "^4.0.0",
+    "fs-extra": "^6.0.1",
+    "socket.io-client": "^2.1.1",
+    "toml": "^2.3.3",
+    "tomlify-j0.4": "^3.0.0"
+  }
+}
