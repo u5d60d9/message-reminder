@@ -1,14 +1,15 @@
 {
   "name": "message-reminder",
-  "version": "1.0.0",
+  "version": "1.0.2",  
   "description": "消息提醒",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder --win --ia32",
-    "update": "bash -c \"rm -rf dist\" && asar p . %localappdata%/Programs/message-reminder/resources/app.asar"
+    "update": "taskkill /f /im message-reminder.exe & bash -c \"rm -rf dist\" && asar p . %localappdata%/Programs/message-reminder/resources/app.asar"
   },
   "build": {
+    "artifactName": "${productName}-${version}.${ext}",
     "asar": true,
     "extraResources": [
       {
@@ -17,17 +18,16 @@
         "filter": [
           "**/*"
         ]
-      },
+      }
+    ],
+    "publish": [
       {
-        "from": "assets/icon/",
-        "to": "assets/icon/",
-        "filter": [
-          "**/*"
-        ]
+        "provider": "generic",
+        "url": "http://sol-msg.fdcyun.com:3999/"
       }
     ]
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+   "repository": "https://git.fdcyun.com/sol/pushmsg",
   "keywords": [
     "消息提醒"
   ],
@@ -35,7 +35,7 @@
   "license": "CC0-1.0",
   "devDependencies": {},
   "dependencies": {
-    "builder": "^4.0.0",
+    "electron-updater": "^3.0.3",
     "fs-extra": "^6.0.1",
     "socket.io-client": "^2.1.1",
     "toml": "^2.3.3",
