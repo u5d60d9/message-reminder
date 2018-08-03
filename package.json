@@ -10,6 +10,7 @@
   },
   "build": {
     "artifactName": "${productName}-${version}.${ext}",
+    "electronVersion": "2.0.6",
     "asar": true,
     "extraResources": [
       {
